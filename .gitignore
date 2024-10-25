@@ -1,0 +1,7 @@
+*~
+*ipynb_checkpoints*
+*.log
+*logfiles
+*.o*
+*__pycache__**
+*OAAT_surv.nc
