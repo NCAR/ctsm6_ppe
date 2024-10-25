@@ -4,4 +4,4 @@
 *logfiles
 *.o*
 *__pycache__**
-*OAAT_surv.nc
+*dask*
