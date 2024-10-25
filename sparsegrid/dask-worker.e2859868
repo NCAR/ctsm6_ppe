@@ -1,0 +1,15 @@
+2024-10-25 11:43:46,442 - distributed.nanny - INFO -         Start Nanny at: 'tcp://128.117.208.108:39423'
+2024-10-25 11:43:48,483 - distributed.worker - INFO -       Start worker at: tcp://128.117.208.108:36689
+2024-10-25 11:43:48,483 - distributed.worker - INFO -          Listening to: tcp://128.117.208.108:36689
+2024-10-25 11:43:48,483 - distributed.worker - INFO -           Worker name:               PBSCluster-5
+2024-10-25 11:43:48,483 - distributed.worker - INFO -          dashboard at:      128.117.208.108:37665
+2024-10-25 11:43:48,483 - distributed.worker - INFO - Waiting to connect to: tcp://128.117.208.103:32947
+2024-10-25 11:43:48,483 - distributed.worker - INFO - -------------------------------------------------
+2024-10-25 11:43:48,483 - distributed.worker - INFO -               Threads:                          1
+2024-10-25 11:43:48,483 - distributed.worker - INFO -                Memory:                   9.31 GiB
+2024-10-25 11:43:48,483 - distributed.worker - INFO -       Local Directory: /glade/derecho/scratch/djk2120/tmp/dask-scratch-space/worker-nx1izxjh
+2024-10-25 11:43:48,483 - distributed.worker - INFO - -------------------------------------------------
+2024-10-25 11:43:50,713 - distributed.worker - INFO - Starting Worker plugin shuffle
+2024-10-25 11:43:50,714 - distributed.worker - INFO -         Registered to: tcp://128.117.208.103:32947
+2024-10-25 11:43:50,714 - distributed.worker - INFO - -------------------------------------------------
+2024-10-25 11:43:50,715 - distributed.core - INFO - Starting established connection to tcp://128.117.208.103:32947
