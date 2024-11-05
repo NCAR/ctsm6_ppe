@@ -1,0 +1,18 @@
+!----------------------------------------------------------------------------------
+! Settings from output_base_highfreq
+!----------------------------------------------------------------------------------
+
+! h5 stream (daily average, gridcell-level)
+hist_mfilt(6) = 1825
+hist_dov2xy(6) = .false.
+hist_nhtfrq(6) = -24
+hist_type1d_pertape(6) = 'GRID'
+hist_fincl6 += 'SOILWATER_10CM', 'TOTSOILLIQ', 'TOTSOILICE', 'EFLX_LH_TOT', 'FSH', 'FGR12', 'FSM', 'QSNOEVAP', 'TLAI', 'QDRAI', 'QDRAI_PERCH', 'QOVER', 'FSA', 'FIRA', 'H2OSNO', 'QSNOFRZ', 'QFLX_SNOW_DRAIN', 'SNOWDP', 'H2OSFC', 'TV', 'TG', 'TAUX', 'TAUY', 'QVEGT', 'TWS', 'QVEGE', 'QSOIL', 'TSKIN', 'FSDS','FSNO','QINTR','SNOWICE','SNOWLIQ','QRUNOFF','H2OSOI','TSOI_10CM','VEGWPLN','VEGWPPD','GPP','NPP', 'AR', 'HR', 'ALT'
+
+! h6 stream (daily average, landunit-level)
+! Eday
+hist_mfilt(7) = 1825
+hist_dov2xy(7) = .false.
+hist_nhtfrq(7) = -24
+hist_type1d_pertape(7) = 'LAND'
+hist_fincl7 += 'TREFMXAV','TREFMNAV'
