@@ -1,0 +1,9 @@
+key,param,minmax,dead_pfts
+oaat0004,jmaxb0,min,2
+oaat0006,jmaxb1,min,2
+oaat0022,tpu25ratio,min,2
+oaat0053,leafcn,max,2
+oaat0071,akn_active,max,14
+oaat0146,KCN,max,14
+oaat0185,vcmaxse_sf,max,4_6_10_13
+oaat0186,jmaxse_sf,max,10_13
