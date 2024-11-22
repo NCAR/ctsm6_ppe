@@ -8,7 +8,7 @@ scratch='/glade/derecho/scratch/linnia/'
 # ########################################################################################
 #
 #    This script adds daily history fields
-#    and then the model will run for 1985-2000 as a branch run
+#    and then the model will run for 1985-2014 as a branch run
 #
 # ########################################################################################
 
@@ -18,7 +18,7 @@ scratch='/glade/derecho/scratch/linnia/'
 ./xmlchange RUN_REFCASE=$CASENAME
 ./xmlchange RUN_REFDATE=1985-01-01
 ./xmlchange STOP_OPTION=nyears
-./xmlchange STOP_N=16
+./xmlchange STOP_N=30
 ./xmlchange CONTINUE_RUN=FALSE
 ./xmlchange RESUBMIT=0
 

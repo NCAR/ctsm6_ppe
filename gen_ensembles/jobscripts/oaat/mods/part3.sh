@@ -7,24 +7,23 @@ scratch='/glade/derecho/scratch/linnia/'
 # PART 3
 #########################################################################################
 #
-#    This script adds daily history fields
-#    and then the model will run for 2001-2014 as a branch run
+#    This script changes the datastreams to recycle 2014 aerosols
+#    and then runs the model for 2015-2023 as a branch run to get daily and subdaily output
 #
 #########################################################################################
-
 
 # --- Ensure that the env_run.xml file has the correct content
 ./xmlchange RUN_TYPE=branch
 ./xmlchange RUN_REFCASE=$CASENAME
-./xmlchange RUN_REFDATE=2001-01-01
+./xmlchange RUN_REFDATE=2015-01-01
 ./xmlchange STOP_OPTION=nyears
-./xmlchange STOP_N=14
+./xmlchange STOP_N=9
 ./xmlchange CONTINUE_RUN=FALSE
 ./xmlchange RESUBMIT=0
 
-# save original user_nl_clm
-cp user_nl_clm user_nl_clm_transient_1985-2001
+# --- Save 1850-2014 datastreams
+cp user_nl_datm_streams user_nl_datm_streams.1901-2014
 
-# Add in the daily history output items 
-echo -e "\n">> user_nl_clm
-cat user_nl_clm_3hourly_2001 >> user_nl_clm
+# --- Change datastreams to recycle 2014 annual areosols
+cp user_nl_datm_streams_CRUJRA.2015-2023 user_nl_datm_streams
+

@@ -1,29 +1,31 @@
 #!/bin/bash
-# create base cases for ctsm5.2.027 
+# create base cases for BNF_v2.n01_ctsm5.3.012 
 
 # ===============================================
 # setup
 
-tag_dir="/glade/work/linnia/ctsm5.3.0"
+tag_dir="/glade/work/linnia/BNF_v2.n01_ctsm5.3.012"
 chargenum='P93300641'
 
 source ~/.bashrc
 
-USER_MODS_DIR='/glade/u/home/linnia/CLM6-PPE/run_clm/jobscripts/oaat_user_mods'
+USER_MODS_DIR='/glade/u/home/linnia/ctsm6_ppe/gen_ensembles/jobscripts/user_mods'
 LND_MESH_FILE=${USER_MODS_DIR}/lnd_mesh.nc
 
-paramfile='/glade/work/linnia/ctsm5.3.0/cime/scripts/transient/runtime_files/ctsm60_params.c241007.nc'
+paramfile=${USER_MODS_DIR}/ctsm60_params.oaat0000.c241120.nc
 
-# AD restart file
-finidat='/glade/campaign/cgd/tss/people/oleson/CLM5_restarts/ctsm530_f19_PPE_pSASU.clm2.r.0161-01-01-00000.nc'
+# restart file for AD
+#finidat='/glade/derecho/scratch/linnia/ctsm5.3.012.Nfix_transient_AD/run/ctsm5.3.012.Nfix_transient_postSASU.clm2.r.0161-01-01-00000.nc'
+
+finidat='/glade/derecho/scratch/wwieder/archive/ctsm530_f19_nfix_pSASU/rest/0161-01-01-00000/ctsm530_f19_nfix_pSASU.clm2.r.0161-01-01-00000.nc'
 
 # ==============================================
 # Build and run basecases
 conda activate runclm
 
 cd ${tag_dir}/cime/scripts/
-casedir="/glade/work/linnia/ctsm5.3.0/cime/scripts/transient/basecases/"
-case="ctsm5.3.0_transient"
+casedir=${tag_dir}/cime/scripts/transient/basecases/
+case="BNF_v2.n01_ctsm5.3.012_transient"
 
 # do these one at a time 
 do_AD=0
@@ -60,7 +62,7 @@ echo "finidat = '$finidat'" >> user_nl_clm
 # env_run.xml
 ./xmlchange RUN_STARTDATE=0001-01-01
 ./xmlchange STOP_OPTION=nyears
-./xmlchange STOP_N=20
+./xmlchange STOP_N=40
 ./xmlchange MASK_MESH=${LND_MESH_FILE}
 ./xmlchange ATM_DOMAIN_MESH=${LND_MESH_FILE}
 ./xmlchange LND_DOMAIN_MESH=${LND_MESH_FILE}
@@ -92,8 +94,8 @@ echo "finidat = '$finidat'" >> user_nl_clm
 ./xmlchange ROOTPE_CPL=16
 
 # env_workflow.xml
-./xmlchange JOB_WALLCLOCK_TIME=03:00:00
-./xmlchange JOB_PRIORITY=regular
+./xmlchange JOB_WALLCLOCK_TIME=05:00:00
+./xmlchange JOB_PRIORITY=economy
 
 # change paramfile
 echo "paramfile = '$paramfile'" >> user_nl_clm
@@ -108,7 +110,7 @@ echo "paramfile = '$paramfile'" >> user_nl_clm
 ./case.build
 
 # Submit case
-./case.submit
+#./case.submit
 
 fi
 
@@ -135,14 +137,14 @@ cd ${casedir}${case}${suffix}
 cp ${USER_MODS_DIR}/user_nl_datm_streams_CRUJRA user_nl_datm_streams
 cp ${USER_MODS_DIR}/user_nl_clm_SASU user_nl_clm
 
-finidat=`ls -1 ${SCRATCH}/${case}_AD/run/${case}_AD.clm?.r.*.nc | tail -1`
-echo $finidat
-echo "finidat = '$finidat'" >> user_nl_clm
+#finidat=`ls -1 ${SCRATCH}/${case}_AD/run/${case}_AD.clm?.r.*.nc | tail -1`
+#echo $finidat
+#echo "finidat = '$finidat'" >> user_nl_clm
 
 # env_run.xml
 ./xmlchange RUN_STARTDATE=0001-01-01
 ./xmlchange STOP_OPTION=nyears
-./xmlchange STOP_N=80
+./xmlchange STOP_N=120
 ./xmlchange MASK_MESH=${LND_MESH_FILE}
 ./xmlchange ATM_DOMAIN_MESH=${LND_MESH_FILE}
 ./xmlchange LND_DOMAIN_MESH=${LND_MESH_FILE}
@@ -174,8 +176,8 @@ echo "finidat = '$finidat'" >> user_nl_clm
 ./xmlchange ROOTPE_CPL=16
 
 #env_workflow.xml
-./xmlchange JOB_WALLCLOCK_TIME=06:00:00
-./xmlchange JOB_PRIORITY=regular
+./xmlchange JOB_WALLCLOCK_TIME=10:00:00
+./xmlchange JOB_PRIORITY=economy
 
 # change paramfile
 echo "paramfile = '$paramfile'" >> user_nl_clm
@@ -188,7 +190,7 @@ echo "paramfile = '$paramfile'" >> user_nl_clm
 ./case.build
 
 # Submit case
-./case.submit
+#./case.submit
 
 fi
 
@@ -215,9 +217,9 @@ cd ${casedir}${case}${suffix}
 cp ${USER_MODS_DIR}/user_nl_datm_streams_CRUJRA user_nl_datm_streams
 cp ${USER_MODS_DIR}/user_nl_clm_postSASU user_nl_clm
 
-finidat=`ls -1 ${SCRATCH}/${case}_SASU/run/${case}_SASU.clm?.r.*.nc | tail -1`
-echo $finidat
-echo "finidat = '$finidat'" >> user_nl_clm
+#finidat=`ls -1 ${SCRATCH}/${case}_SASU/run/${case}_SASU.clm?.r.*.nc | tail -1`
+#echo $finidat
+#echo "finidat = '$finidat'" >> user_nl_clm
 
 # env_run.xml
 ./xmlchange RUN_STARTDATE=0001-01-01
@@ -255,7 +257,7 @@ echo "finidat = '$finidat'" >> user_nl_clm
 
 #env_workflow.xml
 ./xmlchange JOB_WALLCLOCK_TIME=03:00:00
-./xmlchange JOB_PRIORITY=regular
+./xmlchange JOB_PRIORITY=economy
 
 # change paramfile
 echo "paramfile = '$paramfile'" >> user_nl_clm
@@ -268,7 +270,7 @@ echo "paramfile = '$paramfile'" >> user_nl_clm
 ./case.build
 
 # Submit case
-./case.submit
+#./case.submit
 
 fi
 
@@ -297,11 +299,10 @@ cp ${USER_MODS_DIR}/user_nl_datm_streams_CRUJRA user_nl_datm_streams
 cp ${USER_MODS_DIR}/user_nl_datm_streams_CRUJRA.2015-2023 .
 cp ${USER_MODS_DIR}/user_nl_clm_transient_1850 ./user_nl_clm
 cp ${USER_MODS_DIR}/user_nl_clm_daily_1985 .
-cp ${USER_MODS_DIR}/user_nl_clm_3hourly_2001 .
 
-finidat=`ls -1 ${SCRATCH}/${case}_postSASU/run/${case}_postSASU.clm?.r.*.nc | tail -1`
-echo $finidat
-echo "finidat = '$finidat'" >> user_nl_clm
+#finidat=`ls -1 ${SCRATCH}/${case}_postSASU/run/${case}_postSASU.clm?.r.*.nc | tail -1`
+#echo $finidat
+#echo "finidat = '$finidat'" >> user_nl_clm
 
 # env_run.xml
 ./xmlchange MASK_MESH=${LND_MESH_FILE}
@@ -338,8 +339,8 @@ echo "finidat = '$finidat'" >> user_nl_clm
 ./xmlchange ROOTPE_CPL=16
 
 #env_workflow.xml
-./xmlchange JOB_WALLCLOCK_TIME=10:00:00
-./xmlchange JOB_PRIORITY=regular
+./xmlchange JOB_WALLCLOCK_TIME=08:00:00
+./xmlchange JOB_PRIORITY=economy
 
 # change paramfile
 echo "paramfile = '$paramfile'" >> user_nl_clm
