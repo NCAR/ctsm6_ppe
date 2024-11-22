@@ -22,8 +22,8 @@ calc_human_stress_indices = 'NONE'
 use_init_interp = .true.
 
 do_grossunrep = .false.  ! turn off shifting cultivation
-fsurdat = '/glade/derecho/scratch/slevis/temp_work/new_rawdata/tools/mksurfdata_esmf/surfdata_1.9x2.5_hist_1850_16pfts_c240926.nc'
-flanduse_timeseries = '/glade/derecho/scratch/slevis/temp_work/new_rawdata/tools/mksurfdata_esmf/landuse.timeseries_1.9x2.5_hist_1850-2023_16pfts_c240926.nc'
+fsurdat = '/glade/campaign/cesm/cesmdata/inputdata/lnd/clm2/surfdata_esmf/ctsm5.3.0/surfdata_1.9x2.5_hist_1850_16pfts_c240926.nc'
+flanduse_timeseries = '/glade/campaign/cesm/cesmdata/inputdata/lnd/clm2/surfdata_esmf/ctsm5.3.0/landuse.timeseries_1.9x2.5_hist_1850-2023_16pfts_c240926.nc'
 
 !----------------------------------------------------------------------------------
 ! Settings from output_base
