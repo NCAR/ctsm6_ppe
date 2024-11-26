@@ -82,7 +82,8 @@ def get_files(exp,dir,key,tape,yy,utils_path):
         dims  = ['ens','time']
     
     #add landarea information
-    fla=utils_path+'landarea_transient.nc'
+    #fla=utils_path+'landarea_transient.nc'
+    fla=utils_path+'landarea_retrain_h0.nc'
     la=xr.open_dataset(fla)
     appends['la']=la.landarea
     #if tape=='h1':
@@ -157,7 +158,7 @@ def get_exp(exp,dir,key,dvs,tape,yy,utils_path):
     ds['VP']=(rh*es).compute()
     ds['VP'].attrs={'long_name':'vapor pressure','units':'kPa'}
     
-    whit = xr.open_dataset(utils_path+'whit/whitkey.nc')
+    whit = xr.open_dataset(utils_path+'whit/whitkey_CRUJRA.nc')
     ds['biome']=whit.biome
     ds['biome_name']=whit.biome_name
                 
@@ -172,6 +173,6 @@ def get_exp(exp,dir,key,dvs,tape,yy,utils_path):
 
 def get_map(da,sgmap=None):
     if not sgmap:
-        sgmap=xr.open_dataset('sgmap.nc')
+        sgmap=xr.open_dataset('sgmap_retrain_h0.nc')
     return da.sel(gridcell=sgmap.cclass).where(sgmap.notnan).compute()
 
