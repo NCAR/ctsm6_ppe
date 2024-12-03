@@ -1,5 +1,6 @@
 import os
 import netCDF4
+import numpy as np
 
 class Member(object):
     """
@@ -135,6 +136,7 @@ class Member(object):
         for param in self.get_names():
             if self._paramdict[param].location == "P":
                 dset[param][:] = self._paramdict[param].value
+
         dset.close()
 
         ## CREATE and EDIT the nlfile
