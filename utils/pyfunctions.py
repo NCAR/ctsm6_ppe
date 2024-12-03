@@ -53,7 +53,7 @@ def get_files(exp,dir,key,tape,yy,utils_path):
         params=[]
         for p in df.keys():
             if p!='member':
-                appends[p]=xr.DataArray(np.concatenate(([np.nan],df[p].values)),dims='ens')
+                appends[p]=xr.DataArray(df[p].values,dims='ens')
                 params.append(p)
         appends['params']=xr.DataArray(params,dims='param')
         appends['key']=xr.DataArray(keys,dims='ens')
