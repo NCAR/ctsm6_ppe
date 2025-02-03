@@ -16,6 +16,11 @@ CLMCRUNCEPv7.TPQW:meshfile=/glade/campaign/cgd/tss/projects/TRENDY2024/inputs/PP
 
 CLMCRUNCEPv7.TPQW:datavars = QBOT Sa_shum,PSRF Sa_pbot,TBOT Sa_tbot,WIND Sa_wind,FLDS Faxa_lwdn
 
+co2tseries.20tr:datafiles=/glade/campaign/cgd/tss/projects/TRENDY2024/inputs/CO2/fco2_datm_global_simyr_1700-2023_TRENDY_c240815.nc
+co2tseries.20tr:year_first=1700
+co2tseries.20tr:year_align=1700
+co2tseries.20tr:year_last=2023
+
 preso3.hist:year_first=2014
 preso3.hist:year_align=2014
 preso3.hist:year_last=2014

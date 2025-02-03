@@ -1,1 +1,49 @@
-test0000 default
+test0001 ?
+test0002 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.c241127.nc
+        - default 5.1 PFT 4,11,12
+        - FUN_fracfixers=0.25 pft 11,12
+        - froot_leaf fire tuning undone for PFT 14,6
+        - PFT14 KCN*0.1
+test0003 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v2.c241204.nc
+        - default 5.1 PFT 1,2,11,12
+        - FUN_fracfixers=0.25 pft 11,12
+        - froot_leaf fire tuning undone for PFT 14,6
+        - PFT14 KCN*0.1
+        - handtune PFT4
+        - handtune C3 grass (as C3 crop +kmax up)
+test0004 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v4.c241212.nc
+        - default 5.1 PFT 1,2,11,12
+        - FUN_fracfixers=0.25 pft 11,12
+        - froot_leaf fire tuning undone for PFT 14,6
+        - PFT14 KCN*0.1
+        - PFT4: reduce LAI with only froot_leaf, leafcn, slatop (push it low)
+        - PFT13: increase LAI with only froot_leaf, leafcn, slatop (push it high)
+test0005 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v5.c241212.nc
+        - default 5.2 PFT 1,2,11,12
+        - FUN_fracfixers=0.25 pft 11,12
+        - froot_leaf fire tuning undone for PFT 14,6
+        - PFT14 KCN*0.1
+        - PFT4: reduce LAI with only froot_leaf, leafcn, slatop (modestly low)
+        - PFT13: increase LAI with only froot_leaf, leafcn, slatop (modestly high)
+test0006 /glade/work/linnia/CLM6-PPE/ctsm6_lhc/paramfiles/lhc0000.nc
+        - do_grossunrep=.true. for spinup and transient. 
+test0007 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v7.c250109.nc
+        - Fangs new fire parameterization (froot_leaf, rswf_max, rswf_min, fsr_pft, others…)
+        - Undo dead veg tuning of FUN_fracfixers in arctic (FUN_fracfixers=0.25 for all pfts again)
+        - Reduce LAI in the tropics without inducing water stress (pft 4,6)
+        - Reduce LAI in needleleaf forests (pft 1,3)
+        - Reduce arctic LAI for C3 grasses and arctic shrubs (pft 11,12)
+        - Increase C3 grass LAI (survivability)
+        - Relax nitrogen limitation in C4 grass to improve survivability (KCN parameters)
+test0008 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v8.c250112.nc
+        - Same as test0007 but with PFT2 tuned as in 5.3 tuning (leafcn, slatop only)
+test0009 ~/ctsm6_ppe/gen_ensembles/jobscripts/test/gen_paramfiles/ctsm5.3.012.Nfix_params.v9.c250112.nc
+        - Same as test0008 but with Medlynslope tuning as in 5.3 
+test0010 /glade/work/linnia/CLM6-PPE/ctsm6_lhc/paramfiles/lhc0000.nc
+        - Using TRENDY CO2 file in user_nl_datm.streams_CRUJRA.2015-2023
+        - /glade/campaign/cgd/tss/projects/TRENDY2024/inputs/CO2/fco2_datm_global_simyr_1700-2023_TRENDY_c240815.nc
+        * run could not restart in 2015 with the new CO2 data. "Filename does not match restart record" in atm.log
+test0011 Try switching to TRENDY CO2 for full historical record. 
+        - paramfile: /glade/work/linnia/CLM6-PPE/ctsm6_lhc/paramfiles/lhc0000.nc
+        - Using TRENDY CO2 file in user_nl_datm.streams 
+        - /glade/campaign/cgd/tss/projects/TRENDY2024/inputs/CO2/fco2_datm_global_simyr_1700-2023_TRENDY_c240815.nc

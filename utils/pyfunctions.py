@@ -8,6 +8,15 @@ import matplotlib.pyplot as plt
 import glob
 import dask
 
+import gpflow
+import tensorflow as tf
+from sklearn.metrics import r2_score
+
+
+utils_dir = os.path.dirname(__file__)
+
+# ================== general functions =======================
+
 def amean(da):
     #annual mean of monthly data
     m  = da['time.daysinmonth']
@@ -15,9 +24,21 @@ def amean(da):
     xa = cf*(m*da).groupby('time.year').sum().compute()
     return xa
 
+def amax(da):
+    #annual max
+    m  = da['time.daysinmonth']
+    xa = da.groupby('time.year').max().compute()
+    return xa
+
 def pftmean(da,lapft,pft):
+    # pft mean for individual PFT
     x=1/lapft.groupby(pft).sum()*(lapft*da).groupby(pft).sum()
     return x.compute()
+
+def pmean(da,la):
+    # pft mean for all PFTs
+    xp=(1/la.groupby('pft').sum()*(da*la).groupby('pft').sum()).compute()
+    return xp
     
 def bmean(da,la,b):
     x=1/la.groupby(b).sum()*(la*da).groupby(b).sum()
@@ -36,6 +57,11 @@ def fix_time(ds):
     nt=len(ds.time)
     ds['time'] = xr.cftime_range(yr0,periods=nt,freq='MS',calendar='noleap') #fix time bug
     return ds
+
+def get_map(da,sgmap=None):
+    if not sgmap:
+        sgmap=xr.open_dataset(os.path.join(utils_dir,'sgmap_retrain_h0.nc'))
+    return da.sel(gridcell=sgmap.cclass).where(sgmap.notnan).compute()
 
 # ===================== load ensemble ==============================
 
@@ -169,10 +195,66 @@ def get_exp(exp,dir,key,dvs,tape,yy,utils_path):
     
     return ds
 
-# =========================================================
 
-def get_map(da,sgmap=None):
-    if not sgmap:
-        sgmap=xr.open_dataset('sgmap_retrain_h0.nc')
-    return da.sel(gridcell=sgmap.cclass).where(sgmap.notnan).compute()
+# ===================== Emulation ==============================
+
+def train_val_save(X_train,X_test,y_train,y_test,kernel,outfile=None,savedir=None):
+
+        model = gpflow.models.GPR(data=(X_train, np.float64(y_train)), kernel=kernel, mean_function=None)
+        opt = gpflow.optimizers.Scipy()
+        opt_logs = opt.minimize(model.training_loss, model.trainable_variables, options=dict(maxiter=30))
+
+        # plot validation
+        y_pred, y_pred_var = model.predict_y(X_test)
+        sd = y_pred_var.numpy().flatten()**0.5
+
+        coef_deter = r2_score(y_test,y_pred.numpy())
+
+        if (savedir):
+            print('saving')
+            num_params = np.shape(X_train)[1]
+            model.predict = tf.function(model.predict_y, input_signature=[tf.TensorSpec(shape=[None, num_params], dtype=tf.float64)])
+            tf.saved_model.save(model, savedir)
+
+        if (outfile):
+            plt.figure()
+            plt.errorbar(y_test, y_pred.numpy().flatten(), yerr=2*sd, fmt="o")
+            plt.text(1,np.max(y_test),'R2 = '+str(np.round(coef_deter,2)),fontsize=10)
+            plt.text(1,np.max(y_test-0.5),'emulator stdev ~= '+str(np.round(np.mean(sd),2)),fontsize=10)
+            plt.plot([0,np.max(y_test)],[0,np.max(y_test)],linestyle='--',c='k')
+            plt.xlabel('CLM')
+            plt.ylabel('Emulated')
+            plt.xlim([np.min(y_test)-.5,np.max(y_test)+.5])
+            plt.ylim([np.min(y_test)-.5,np.max(y_test)+.5])
+            plt.tight_layout()
+            plt.savefig(outfile)
+    
+        return coef_deter, np.mean(sd)
+
+
+def select_kernel(kernel_dict,X_train,X_test,y_train,y_test):
+    stdev = []
+    r2 = []
+    for k in range(len(kernel_dict)):
+        kernel = kernel_dict[k]
+        cd, sd = train_val_save(X_train,X_test,y_train,y_test,kernel,outfile=None,savedir=None)
+        stdev.append(sd)
+        r2.append(cd)
+      
+    r2_norm = (r2 - np.min(r2)) / (np.max(r2) - np.min(r2))
+    std_norm = 1 - (stdev - np.min(stdev)) / (np.max(stdev) - np.min(stdev))
+
+    score = 0.8*r2_norm + 0.2*std_norm
+    best_kernel = kernel_dict[np.argmax(score)]
+    
+    return best_kernel
+
+# ===================================================
+# ===========    History Matching   =================
+
+def calc_I(model_mean,model_var,obs_mean,obs_var):
+        # implausibility score
+        I = np.abs(obs_mean-model_mean) / np.sqrt(obs_var + model_var)
+        return I
+
 

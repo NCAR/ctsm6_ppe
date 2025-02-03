@@ -8,6 +8,7 @@ scratch='/glade/derecho/scratch/linnia/'
 #########################################################################################
 #
 #    This script changes the datastreams to recycle 2014 aerosols
+#    and switches to TRENDY CO2 
 #    and then runs the model for 2015-2023 as a branch run to get daily and subdaily output
 #
 #########################################################################################
