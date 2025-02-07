@@ -4,4 +4,4 @@
 *logfiles
 *.o*
 *__pycache__**
-*dask*
+*dask*utils/lapft_ctsm5.3.012.nc
