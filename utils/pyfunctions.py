@@ -219,8 +219,8 @@ def train_val_save(X_train,X_test,y_train,y_test,kernel,outfile=None,savedir=Non
         if (outfile):
             plt.figure()
             plt.errorbar(y_test, y_pred.numpy().flatten(), yerr=2*sd, fmt="o")
-            plt.text(1,np.max(y_test),'R2 = '+str(np.round(coef_deter,2)),fontsize=10)
-            plt.text(1,np.max(y_test-0.5),'emulator stdev ~= '+str(np.round(np.mean(sd),2)),fontsize=10)
+            plt.text(0.02, 0.98, f'R² = {np.round(coef_deter, 2)}',fontsize=10,transform=plt.gca().transAxes,va='top',ha='left')
+            plt.text(0.02, 0.93, f'Emulator stdev ≈ {np.round(np.mean(sd), 2)}',fontsize=10,transform=plt.gca().transAxes,va='top',ha='left')
             plt.plot([0,np.max(y_test)],[0,np.max(y_test)],linestyle='--',c='k')
             plt.xlabel('CLM')
             plt.ylabel('Emulated')
@@ -256,5 +256,44 @@ def calc_I(model_mean,model_var,obs_mean,obs_var):
         # implausibility score
         I = np.abs(obs_mean-model_mean) / np.sqrt(obs_var + model_var)
         return I
+
+def sample_and_score(data, N, n, num_params):
+    index = np.arange(data.shape[0]) 
+
+    # take N random samples of size n
+    draws_ix = np.array([np.random.choice(index, size=n, replace=False) for _ in range(N)])
+
+    # Compute scores for each sampled subset
+    nbins = 20 # for LHC
+    L = np.zeros(N) 
+    for i in range(N):
+        s = data[draws_ix[i, :], :]
+        L[i] = LHC_score(n, nbins, num_params, s)
+    
+    # Find the best subset (minimum score)
+    min_score_ix = np.argmin(L)
+    
+    return draws_ix[min_score_ix, :]
+
+
+def LHC_score(n,nbins,num_params,sample):
+    # sample is np array with rows as ensemble members and columns as parameters
+    # zero is a perfect Latin Hypercube
+    Pb = n/nbins
+    dim_count = []
+    for di in range(num_params):
+        data = sample[:,di]
+        bin_count = []
+        for bi in range(nbins):
+            bin_width = 1/20
+            bin_min = bi/nbins
+            bin_max = bi/nbins+bin_width
+            Ab = np.sum((data>bin_min)&(data<bin_max))
+    
+            bin_count.append(np.abs(Pb - Ab))
+        dim_count.append(np.sum(bin_count))
+    
+    return np.sum(dim_count)
+
 
 
