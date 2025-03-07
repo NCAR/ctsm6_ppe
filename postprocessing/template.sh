@@ -8,7 +8,7 @@
 #PBS -l select=1:ncpus=1
 
 source ~/.bashrc
-conda activate /glade/work/linnia/conda-envs/mlenv
+conda activate ppe-py
 
-python postp_lhc_pftmean.py key
+python postp_lhc_amean_grid_subset.py key
 

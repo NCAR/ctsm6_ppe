@@ -1,0 +1,4 @@
+how I've been concatenating stuff:
+
+example:
+ncecat -u ens *.nc ctsm6lhc_gridded_mean_2004-2023.nc
