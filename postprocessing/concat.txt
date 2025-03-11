@@ -1,4 +1,5 @@
 how I've been concatenating stuff:
 
 example:
+module load nco
 ncecat -u ens *.nc ctsm6lhc_gridded_mean_2004-2023.nc
