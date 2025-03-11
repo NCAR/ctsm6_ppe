@@ -10,5 +10,5 @@
 source ~/.bashrc
 conda activate ppe-py
 
-python postp_lhc_amean_grid_subset.py key
+python postp_lhc_arid.py key
 
