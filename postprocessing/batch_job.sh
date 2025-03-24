@@ -1,9 +1,9 @@
 
-for i in {0000..1500}; do
+for i in {0002..0500}; do
     echo $i
-    sed 's/key/lhc'$i'/g' template.sh > 'lhc_'$i'.job'
-    #sed 's/key/LHC'$i'/g' template.sh > 'lhc_'$i'.job'
-    qsub 'lhc_'$i'.job'
+    #sed 's/key/lhc'$i'/g' template.sh > 'postp_'$i'.job'
+    sed 's/key/wave1'$i'/g' template.sh > 'postp_'$i'.job'
+    qsub 'postp_'$i'.job'
 
 done
 
