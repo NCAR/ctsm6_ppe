@@ -22,8 +22,7 @@ def pp(ds):
     return ds[dvs]
 
 ######################################################
-# load and process data
-
+# find files
 f0=sorted(glob.glob(dir+'*lhc0000*.'+tape+'.*'))
 f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
 if len(f)<len(f0):
@@ -32,7 +31,9 @@ if len(f)<len(f0):
     f=f0
 else:
     bad=False
+fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
 
+#load data
 ds=pp(xr.open_dataset(f[-2]))
 
 # calculate global annual mean
@@ -43,12 +44,11 @@ for v in dvs:
     out[v+'_global_amean']=gmean(x,la)
     out[v+'_global_amean'].attrs=ds[v].attrs
 
-fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
-
 # nan output if no files
 if bad:
     out=np.nan*out
-    fout.replace("lhc0000",lhc)
+    fout=fout.replace('lhc0000',lhc)
+    
 # save 
 out.to_netcdf(fout)
 
