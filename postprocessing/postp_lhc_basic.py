@@ -29,7 +29,8 @@ if len(f)==0:
     #hacky way to generate correctly shaped nan output for failed simulations
     bad=True
     f=sorted(glob.glob(dir+'*lhc0000*.'+tape+'.*')) 
-    
+else:
+    bad=False
 
 ds=pp(xr.open_dataset(f[-2]))
 

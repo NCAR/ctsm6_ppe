@@ -1,0 +1,28 @@
+#!/bin/bash
+#PBS -N ctsm6_lhc0210
+#PBS -q casper
+#PBS -l walltime=3:00:00
+#PBS -A P93300041
+#PBS -j oe
+#PBS -k eod
+#PBS -l select=1:ncpus=1
+
+source ~/.bashrc
+conda activate ppe-py
+
+
+python postp_lhc_basic.py lhc0210 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0211 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0212 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0213 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0214 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0215 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0216 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0217 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0218 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0219 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0220 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0221 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0222 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0223 /glade/derecho/scratch/djk2120/postp/c20250324/
+python postp_lhc_basic.py lhc0224 /glade/derecho/scratch/djk2120/postp/c20250324/
