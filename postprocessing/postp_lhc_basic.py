@@ -27,6 +27,7 @@ f0=sorted(glob.glob(dir+'*lhc0000*.'+tape+'.*'))
 f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
 if len(f)<len(f0):
     #hacky way to generate correctly shaped nan output for failed simulations
+    # if the requested lhc is missing, we will reanalyze lhc0000 and multiply by np.nan
     bad=True
     f=f0
 else:
