@@ -11,6 +11,6 @@ The third step is to edit the driver script that will apply it to all 1501 wave0
 The final step is to run your full postprocessing task. We recommend:
 bash driver.sh &> driver.log &
 
-You can monitor driver.log for progress, which will write the total number of netcdfs written each minute. Once all the output netcdfs are generated, a concatenated file will appear in a date-labeled directory under your OUTDIR, e.g. $OUTDIR/c250324/concat/foo_concat.nc. Generally speaking we find post-processing the ensemble in this way will take 10-45 minutes, depending on the exact postp task. 
+You can monitor driver.log for progress (tail driver.log), which will report the cumulative number of netcdfs written each minute. Once all the output netcdfs are generated, a concatenated file will appear in a date-labeled directory under your OUTDIR, e.g. $OUTDIR/c250324/concat/foo_concat.nc. Generally speaking we find post-processing the ensemble in this way will take 10-45 minutes, depending on the exact postp task. 
 
 If driver.sh hangs, check qstat -u $USER to see if you have any jobs running. If not, something failed and you'll have to debug your python script. Consider trying to run driver.sh as is before editing anything to make debugging easier! Note also that driver.sh will persist long after your casper jobs all die if something goes wrong. At which point killing the backgrounded process is advisable (e.g. kill $(jobs -p)).<
