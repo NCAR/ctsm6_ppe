@@ -11,4 +11,4 @@ The third step is to edit the driver script that will apply it to all 1501 wave0
 The final step is to run your full postprocessing task. We recommend:
 bash driver.sh &> driver.log &
 
-You can monitor driver.log for progress, and finally a concatenated file will appear in a date-labeled directory under your OUTDIR, e.g. $OUTDIR/c250324/concat/foo_concat.nc. Generally speaking we find post-processing the ensemble in this way will take 15-45 minutes, depending on the exact postp task. 
+You can monitor driver.log for progress, and finally a concatenated file will appear in a date-labeled directory under your OUTDIR, e.g. $OUTDIR/c250324/concat/foo_concat.nc. Generally speaking we find post-processing the ensemble in this way will take 10-45 minutes, depending on the exact postp task. 
