@@ -24,11 +24,12 @@ def pp(ds):
 ######################################################
 # load and process data
 
+f0=sorted(glob.glob(dir+'*lhc0000*.'+tape+'.*'))
 f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
-if len(f)==0:
+if len(f)<len(f0):
     #hacky way to generate correctly shaped nan output for failed simulations
     bad=True
-    f=sorted(glob.glob(dir+'*lhc0000*.'+tape+'.*')) 
+    f=f0
 else:
     bad=False
 
@@ -42,11 +43,12 @@ for v in dvs:
     out[v+'_global_amean']=gmean(x,la)
     out[v+'_global_amean'].attrs=ds[v].attrs
 
+fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
+
 # nan output if no files
 if bad:
     out=np.nan*out
-
+    fout.replace("lhc0000",lhc)
 # save 
-fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
 out.to_netcdf(fout)
 
