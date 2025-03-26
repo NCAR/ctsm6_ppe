@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N wave2_hmatch_num
 #PBS -q casper
-#PBS -l walltime=4:00:00
+#PBS -l walltime=2:00:00
 #PBS -A P93300041
 #PBS -j oe
 #PBS -k eod

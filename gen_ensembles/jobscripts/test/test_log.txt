@@ -47,3 +47,7 @@ test0011 Try switching to TRENDY CO2 for full historical record.
         - paramfile: /glade/work/linnia/CLM6-PPE/ctsm6_lhc/paramfiles/lhc0000.nc
         - Using TRENDY CO2 file in user_nl_datm.streams 
         - /glade/campaign/cgd/tss/projects/TRENDY2024/inputs/CO2/fco2_datm_global_simyr_1700-2023_TRENDY_c240815.nc
+test0013 Same as test9 with default PFT 2 and 13. 
+        - paramfile: ~/ctsm6_ppe/gen_ensembles/jobscripts/tests/gen_paramfiles/ctsm5.3.012.Nfix_params.v13.c250221.nc
+test0014 Same as test9 with default PFT 1, 2 and 13. 
+        - paramfile: ~/ctsm6_ppe/gen_ensembles/jobscripts/tests/gen_paramfiles/ctsm5.3.012.Nfix_params.v14.c250221.nc

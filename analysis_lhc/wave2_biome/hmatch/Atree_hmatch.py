@@ -88,18 +88,19 @@ biome = 'Tropical savanna'
 b = 2
 nparameters = 41+15*2
 
+pft4_param_names = [f"{param}_{4}" for param in psample.columns]
+cols = np.concatenate([u_params,pft4_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome1_sample)[0] < 100):
-    nx = range(np.shape(biome1_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome1_sample)[0],size=100,replace=False)
-    
+nx = np.random.choice(len(biome1_sample),size=min(len(biome1_sample),1000),replace=False)
+
 for n,i in enumerate(nx):
-    u = np.tile(biome1_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft4_param_names = [f"{param}_{4}" for param in psample.columns]
-    p4 = np.tile(biome1_sample[pft4_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome1_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p4 = start[pft4_param_names]
     p14 = psample.values
     sample = np.concatenate([u,p4,p14],axis=1)
     
@@ -123,25 +124,26 @@ biome = 'Subtropical savanna'
 b = 3
 nparameters = 41+15*3
 
+pft4_param_names = [f"{param}_{4}" for param in psample.columns]
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+cols = np.concatenate([u_params,pft4_param_names,pft14_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome2_sample)[0] < 100):
-    nx = range(np.shape(biome2_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome2_sample)[0],size=100,replace=False)
-    
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+
+nx = np.random.choice(len(biome2_sample),size=min(len(biome2_sample),1000),replace=False)
 for n,i in enumerate(nx):
-    u = np.tile(biome2_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft4_param_names = [f"{param}_{4}" for param in psample.columns]
-    p4 = np.tile(biome2_sample[pft4_param_names].iloc[i].values,(n_psamp,1))
-    pft14_param_names = [f"{param}_{14}" for param in psample.columns]
-    p14 = np.tile(biome2_sample[pft14_param_names].iloc[i].values,(n_psamp,1))
-    
+    start_array = np.tile(biome2_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p4 = start[pft4_param_names]
+    p14 = start[pft14_param_names]
     p6 = psample.values
     sample = np.concatenate([u,p4,p6,p14],axis=1)
 
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    # emulate sample
     y_pred, y_pred_var = loaded_emulator.predict(sample)
     
     I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
@@ -161,23 +163,25 @@ biome = 'Grasslands'
 b = 5
 nparameters = 41+15*2
 
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+cols = np.concatenate([u_params,pft14_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome3_sample)[0] < 100):
-    nx = range(np.shape(biome3_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome3_sample)[0],size=100,replace=False)
-    
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+
+nx = np.random.choice(len(biome3_sample),size=min(len(biome3_sample),1000),replace=False)
 for n,i in enumerate(nx):
-    u = np.tile(biome3_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft14_param_names = [f"{param}_{14}" for param in psample.columns]
-    p14 = np.tile(biome3_sample[pft14_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome3_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p14 = start[pft14_param_names]
     
     p13 = psample.values
     sample = np.concatenate([u,p13,p14],axis=1)
 
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    # emulate sample
     y_pred, y_pred_var = loaded_emulator.predict(sample)
     
     I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
@@ -197,25 +201,27 @@ biome = 'Shrubland'
 b = 6
 nparameters = 41+15*3
 
+pft13_param_names = [f"{param}_{13}" for param in psample.columns]
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+cols = np.concatenate([u_params,pft13_param_names,pft14_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome5_sample)[0] < 100):
-    nx = range(np.shape(biome5_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome5_sample)[0],size=100,replace=False)
-    
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+
+nx = np.random.choice(len(biome5_sample),size=min(len(biome5_sample),1000),replace=False)
 for n,i in enumerate(nx):
-    u = np.tile(biome5_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft13_param_names = [f"{param}_{13}" for param in psample.columns]
-    p13 = np.tile(biome5_sample[pft13_param_names].iloc[i].values,(n_psamp,1))
-    pft14_param_names = [f"{param}_{14}" for param in psample.columns]
-    p14 = np.tile(biome5_sample[pft14_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome5_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p13 = start[pft13_param_names]
+    p14 = start[pft14_param_names]
     
     p10 = psample.values
     sample = np.concatenate([u,p10,p13,p14],axis=1)
 
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    # emulate sample
     y_pred, y_pred_var = loaded_emulator.predict(sample)
     
     I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
@@ -237,27 +243,30 @@ biome = 'Broadleaf evergreen temperate tree'
 b = 4
 nparameters = 41+15*3
 
+pft13_param_names = [f"{param}_{13}" for param in psample.columns]
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+cols = np.concatenate([u_params,pft13_param_names,pft14_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome6_sample)[0] < 100):
-    nx = range(np.shape(biome6_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome6_sample)[0],size=100,replace=False)
-    
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+
+nx = np.random.choice(len(biome6_sample),size=min(len(biome6_sample),1000),replace=False)
 for n,i in enumerate(nx):
-    u = np.tile(biome6_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft13_param_names = [f"{param}_{13}" for param in psample.columns]
-    p13 = np.tile(biome6_sample[pft13_param_names].iloc[i].values,(n_psamp,1))
-    pft14_param_names = [f"{param}_{14}" for param in psample.columns]
-    p14 = np.tile(biome6_sample[pft14_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome6_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p13 = start[pft13_param_names]
+    p14 = start[pft14_param_names]
     
     p5 = psample.values
     sample = np.concatenate([u,p5,p13,p14],axis=1)
 
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    # emulate sample
     y_pred, y_pred_var = loaded_emulator.predict(sample)
-    
+
+    # calc implausibility
     I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
     ix = np.where(I<2)[0]
     if (n ==0):
@@ -275,30 +284,34 @@ biome4_sample = pd.DataFrame(biome4_samples,columns=columns)
 
 # biome 4 PFT 5
 b4_sample = biome4_sample
-b4_sample.to_csv(outdir+key+"_tree1_b4.csv", index=False)
+b4_sample.to_csv(outdir+key+"_Atree_b4.csv", index=False)
 
-cols = np.concatenate((u_params, pft14_param_names))
+cols = np.concatenate((u_params, pft13_param_names, pft14_param_names))
 biome4_unique = biome4_sample[cols].drop_duplicates()
 
 # biome 6 PFT 10
 b6_sample = biome6_sample.merge(biome4_unique, on=cols.tolist(), how='inner')
-b6_sample.to_csv(outdir+key+"_tree1_b6.csv", index=False)
+b6_sample.to_csv(outdir+key+"_Atree_b6.csv", index=False)
 
 # biome 5 PFT 13
 b5_sample = biome5_sample.merge(biome4_unique, on=cols.tolist(), how='inner')
-b5_sample.to_csv(outdir+key+"_tree1_b5.csv", index=False)
+b5_sample.to_csv(outdir+key+"_Atree_b5.csv", index=False)
 
 # biome 3 PFT 6
+cols = np.concatenate((u_params, pft14_param_names))
+biome4_unique = biome4_sample[cols].drop_duplicates()
 b3_sample = biome3_sample.merge(biome4_unique, on=cols.tolist(), how='inner')
-b3_sample.to_csv(outdir+key+"_tree1_b3.csv", index=False)
+b3_sample.to_csv(outdir+key+"_Atree_b3.csv", index=False)
 
 # biome 2 PFT 14
-b2_sample = biome2_sample.merge(biome4_unique, on=cols.tolist(), how='inner')
-b2_sample.to_csv(outdir+key+"_tree1_b2.csv", index=False)
+cols = np.concatenate((u_params, pft4_param_names, pft14_param_names))
+unique = b3_sample[cols].drop_duplicates()
+b2_sample = biome2_sample.merge(unique, on=cols.tolist(), how='inner')
+b2_sample.to_csv(outdir+key+"_Atree_b2.csv", index=False)
 
 # biome 1 PFT 4
 cols = np.concatenate((u_params, pft4_param_names))
 biome2_unique = b2_sample[cols].drop_duplicates()
 b1_sample = biome1_sample.merge(biome2_unique, on=cols.tolist(), how='inner')
-b1_sample.to_csv(outdir+key+"_tree1_b1.csv", index=False)
+b1_sample.to_csv(outdir+key+"_Atree_b1.csv", index=False)
 

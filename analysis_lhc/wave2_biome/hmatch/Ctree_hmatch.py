@@ -65,16 +65,17 @@ psample = psample_all.iloc[int(key)*n_psamp:int(key)*n_psamp+n_psamp]
 # A tree
 d = '/glade/work/linnia/CLM6-PPE/ctsm6_wave1/NROY/'
 b=4
-files = np.sort(glob.glob(d+'*tree1*'+str(b)+'.csv'))
+files = np.sort(glob.glob(d+str(key)+'_Atree*'+str(b)+'.csv'))
 Atree_biome4 = pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
 
 # B tree
 d = '/glade/work/linnia/CLM6-PPE/ctsm6_wave1/NROY/'
 b=10
-files = np.sort(glob.glob(d+'*Btree*'+str(b)+'.csv'))
+files = np.sort(glob.glob(d+str(key)+'_Btree*'+str(b)+'.csv'))
 Btree_biome10 = pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
 
 #############################################
+########################################################
 # Find unique universal sets that are in both trees
 uA_unique = Atree_biome4[u_params].drop_duplicates()
 uB_unique = Btree_biome10[u_params].drop_duplicates()
@@ -83,34 +84,49 @@ uset_intersection = uA_unique.merge(uB_unique, how='inner')
 biome = 'Conifer forest'
 b = 8
 nparameters = 41+15*4
-cols = u_params
+
+pft2_param_names = [f"{param}_{2}" for param in pft_params]
+pft13_param_names = [f"{param}_{13}" for param in psample.columns]
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
 
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-uset_ix = np.random.choice(len(uset_intersection),size=min(len(uset_intersection),30),replace=False)
-for n,ux in enumerate(uset_ix):
-    u = np.tile(uset_intersection.iloc[ux].values,(n_psamp,1))
-    Atree_subset = Atree_biome4.merge(uset_intersection.loc[[ux]], on=cols.tolist(), how='inner')
-    Btree_subset = Btree_biome10.merge(uset_intersection.loc[[ux]], on=cols.tolist(), how='inner')
-    pft2_param_names = [f"{param}_{2}" for param in pft_params]
-    for i in np.random.choice(np.shape(Btree_subset)[0],size=min(np.shape(Btree_subset)[0],10),replace=False):
-        p2 = np.tile(Btree_subset[pft2_param_names].iloc[i].values,(n_psamp,1))
-        for j in np.random.choice(np.shape(Atree_subset)[0],size=min(np.shape(Atree_subset)[0],10),replace=False):
-            pft13_param_names = [f"{param}_{13}" for param in pft_params]
-            p13 = np.tile(Atree_subset[pft13_param_names].iloc[j].values,(n_psamp,1))
-            pft14_param_names = [f"{param}_{14}" for param in pft_params]
-            p14 = np.tile(Atree_subset[pft14_param_names].iloc[j].values,(n_psamp,1))
+for ux in range(len(uset_intersection)):
+    Atree_subset = Atree_biome4.merge(uset_intersection.loc[[ux]], how='inner')
+    cols = np.concatenate([u_params,pft13_param_names,pft14_param_names]).tolist()
+    Atree_subset = Atree_subset[cols].drop_duplicates()
+    Btree_subset = Btree_biome10.merge(uset_intersection.loc[[ux]], how='inner')
+    
+    for a in np.random.choice(len(Atree_subset),size=min(len(Atree_subset),100),replace=False):
+        cols = np.concatenate([u_params,pft13_param_names,pft14_param_names]).tolist()
+        start_array = np.tile(Atree_subset[cols].iloc[a].values,(n_psamp,1))
+        Astart = pd.DataFrame(start_array, columns=cols)
+    
+        u = Astart[u_params]
+        p13 = Astart[pft13_param_names]
+        p14 = Astart[pft14_param_names]
+
+        for b in np.random.choice(len(Btree_subset),size=min(len(Btree_subset),100),replace=False):
+
+            cols = np.concatenate([u_params,pft2_param_names]).tolist()
+            start_array = np.tile(Btree_subset[cols].iloc[b].values,(n_psamp,1))
+            Bstart = pd.DataFrame(start_array, columns=cols)
+
+            p2 = Bstart[pft2_param_names]
 
             p1 = psample.values
             sample = np.concatenate([u,p1,p2,p13,p14],axis=1)
         
-            loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+            # emulate sample
             y_pred, y_pred_var = loaded_emulator.predict(sample)
             
+            # calculate implausibility
             I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
             ix = np.where(I<2)[0]
-            if (n ==0):
+            if (ux ==0):
                 biome8_samples = sample[ix,:]
             else:
                 biome8_samples = np.concatenate((biome8_samples,sample[ix,:]),axis=0)
@@ -121,31 +137,38 @@ columns = np.concatenate((u_params,pft1_param_names,pft2_param_names,pft13_param
 biome8_sample = pd.DataFrame(biome8_samples,columns=columns)
 print('biome 8 done')
 
+
 #############################################
 biome = 'Mixed deciduous temperate forest'
 b = 7
 nparameters = 41+15*4
 
+pft1_param_names = [f"{param}_{1}" for param in psample.columns]
+pft13_param_names = [f"{param}_{13}" for param in psample.columns]
+pft14_param_names = [f"{param}_{14}" for param in psample.columns]
+cols = np.concatenate([u_params,pft1_param_names,pft13_param_names,pft14_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-nx = np.random.choice(np.shape(biome8_sample)[0],size=min(np.shape(biome8_sample)[0],100),replace=False)
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
 
+nx = np.random.choice(len(biome8_sample),size=min(len(biome8_sample),100),replace=False)
 for n,i in enumerate(nx):
-    u = np.tile(biome8_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft1_param_names = [f"{param}_{1}" for param in psample.columns]
-    p1 = np.tile(biome8_sample[pft1_param_names].iloc[i].values,(n_psamp,1))
-    pft13_param_names = [f"{param}_{13}" for param in psample.columns]
-    p13 = np.tile(biome8_sample[pft13_param_names].iloc[i].values,(n_psamp,1))
-    pft14_param_names = [f"{param}_{14}" for param in psample.columns]
-    p14 = np.tile(biome8_sample[pft14_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome8_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p1 = start[pft1_param_names]
+    p13 = start[pft13_param_names]
+    p14 = start[pft14_param_names]
 
     p7 = psample.values
     sample = np.concatenate([u,p1,p7,p13,p14],axis=1)
 
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    # emulate sample
     y_pred, y_pred_var = loaded_emulator.predict(sample)
     
+    # calculate implausibility
     I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
     ix = np.where(I<2)[0]
     if (n ==0):
@@ -161,59 +184,74 @@ print('biome 7 done')
 
 #############################################
 # biome 7 prunes biome 8 (due to subsampling)
-pft13_param_names = [f"{param}_{13}" for param in pft_params]
-columns = np.concatenate((u_params, pft13_param_names))
+columns = np.concatenate((u_params, pft1_param_names, pft13_param_names, pft14_param_names))
 biome7_unique = biome7_sample[columns].drop_duplicates()
 
 biome8_sample = biome8_sample.merge(biome7_unique, on=columns.tolist(), how='inner')
 
 #############################################
 # intersection of biome 8 and Btree
-b8_unique = biome8_sample[u_params].drop_duplicates()
-uB_unique = Btree_biome10[u_params].drop_duplicates()
+cols = np.concatenate([u_params,pft2_param_names]).tolist()
+b8_unique = biome8_sample[cols].drop_duplicates()
+uB_unique = Btree_biome10[cols].drop_duplicates()
 uset_intersection = b8_unique.merge(uB_unique, how='inner')
 
 biome = 'Broadleaf deciduous boreal trees' # 2,8,12,13
 b = 11
 nparameters = 41+15*4
-cols = u_params
 
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
+
+loaded_emulator = tf.saved_model.load(emulator_dir + biome)
 
 pft2_param_names = [f"{param}_{2}" for param in pft_params]
 pft12_param_names = [f"{param}_{12}" for param in pft_params]
 pft13_param_names = [f"{param}_{13}" for param in pft_params]
 
-uset_ix = np.random.choice(len(uset_intersection),size=min(len(uset_intersection),30),replace=False)
-for n,ux in enumerate(uset_ix): # loop over unique universal samples
-    u = np.tile(uset_intersection.iloc[ux].values,(n_psamp,1))
-    # find all biome8 sets and Btree sets for this universal sample
-    b8_subset = biome8_sample.merge(uset_intersection.loc[[ux]], on=cols.tolist(), how='inner')
-    Btree_subset = Btree_biome10.merge(uset_intersection.loc[[ux]], on=cols.tolist(), how='inner')
+for ux in range(len(uset_intersection)):
+    b8_subset = biome8_sample.merge(uset_intersection.loc[[ux]], how='inner')
+    cols = np.concatenate([u_params,pft2_param_names,pft13_param_names]).tolist()
+    b8_subset = b8_subset[cols].drop_duplicates()
+    
+    Btree_subset = Btree_biome10.merge(uset_intersection.loc[[ux]], how='inner')
+    
+    for c in np.random.choice(len(b8_subset),size=min(len(b8_subset),100),replace=False):
+        cols = np.concatenate([u_params,pft2_param_names,pft13_param_names]).tolist()
+        start_array = np.tile(b8_subset[cols].iloc[c].values,(n_psamp,1))
+        Cstart = pd.DataFrame(start_array, columns=cols)
+    
+        u = Cstart[u_params]
+        p2 = Cstart[pft2_param_names]
+        p13 = Cstart[pft13_param_names]
 
-    # for each biome8 set, select the respective p2 and p13 parameters
-    for i in np.random.choice(np.shape(b8_subset)[0],size=min(np.shape(b8_subset)[0],10),replace=False):
-        p2 = np.tile(b8_subset[pft2_param_names].iloc[i].values,(n_psamp,1))
-        p13 = np.tile(b8_subset[pft13_param_names].iloc[i].values,(n_psamp,1))
+        # loop over all Btree subset options for 12 for Cstart of U+p2
+        cols = np.concatenate([u_params,pft2_param_names]).tolist()
+        Btree_options = Btree_subset.merge(Cstart[cols],how='inner')
+        cols = np.concatenate([u_params,pft2_param_names,pft12_param_names]).tolist()
+        Btree_options = Btree_options[cols].drop_duplicates()
 
-        # for each Btree set, select the respective p12 parameters
-        for j in np.random.choice(np.shape(Btree_subset)[0],size=min(np.shape(Btree_subset)[0],10),replace=False):
-            p12 = np.tile(Btree_subset[pft12_param_names].iloc[j].values,(n_psamp,1))
+        for b in np.random.choice(len(Btree_options),size=min(len(Btree_options),100),replace=False):
+
+            cols = np.concatenate([u_params,pft2_param_names,pft12_param_names]).tolist()
+            start_array = np.tile(Btree_options[cols].iloc[b].values,(n_psamp,1))
+            Bstart = pd.DataFrame(start_array, columns=cols)
+
+            p12 = Bstart[pft12_param_names]
 
             # introduce new PFT
             p8 = psample.values
             sample = np.concatenate([u,p2,p8,p12,p13],axis=1)
 
             # emulate full sample (n_psamp)
-            loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+            
             y_pred, y_pred_var = loaded_emulator.predict(sample)
 
             # calc implausibility
             I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
-            ix = np.where(I<3)[0]
+            ix = np.where(I<2)[0]
             # save sample
-            if (n ==0):
+            if (ux ==0):
                 biome11_samples = sample[ix,:]
             else:
                 biome11_samples = np.concatenate((biome11_samples,sample[ix,:]),axis=0)
@@ -231,10 +269,10 @@ b11_sample.to_csv(outdir+key+"_Ctree_biome11.csv", index=False)
 
 cols = np.concatenate((u_params, pft13_param_names))
 biome11_unique = biome11_sample[cols].drop_duplicates()
-
 b7_sample = biome7_sample.merge(biome11_unique, on=cols.tolist(), how='inner')
 b7_sample.to_csv(outdir+key+"_Ctree_biome7.csv", index=False)
 
+cols = np.concatenate((u_params, pft2_param_names, pft13_param_names))
+biome11_unique = biome11_sample[cols].drop_duplicates()
 b8_sample = biome8_sample.merge(biome11_unique, on=cols.tolist(), how='inner')
 b8_sample.to_csv(outdir+key+"_Ctree_biome8.csv", index=False)
-

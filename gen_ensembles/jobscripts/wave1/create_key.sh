@@ -1,0 +1,1 @@
+seq -w 0101 0500 | sed 's/^/wave1/' > wave1.txt

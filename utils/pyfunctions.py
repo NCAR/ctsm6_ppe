@@ -39,6 +39,20 @@ def pmean(da,la):
     # pft mean for all PFTs
     xp=(1/la.groupby('pft').sum()*(da*la).groupby('pft').sum()).compute()
     return xp
+
+#def pxbmean(da,minarea=5e4):
+#    f='/glade/u/home/linnia/ctsm6_ppe/utils/lapxb_sg_sudoku_ctsm53017.nc'
+#    lapxb=xr.open_dataset(f).lapxb_sg
+#    ix=(lapxb.mean(dim='year').sum(dim='pft')>minarea)
+#    dapb = 1/lapxb.sum(dim='pft')*(lapxb.isel(pxb=ix)*da).sum(dim='pft')
+#    return dapb
+
+def pxbmean(da):
+    f='/glade/u/home/linnia/ctsm6_ppe/utils/lapxb_sg_sudoku_ctsm53017.nc'
+    lapxb=xr.open_dataset(f).landarea_biome
+    x=(lapxb*da).sum(dim=['pft','vegtype'])/(lapxb).sum(dim=['pft','vegtype'])
+    #xm=x.mean(dim='year')
+    return x
     
 def bmean(da,la,b):
     x=1/la.groupby(b).sum()*(la*da).groupby(b).sum()
@@ -248,6 +262,27 @@ def select_kernel(kernel_dict,X_train,X_test,y_train,y_test):
     best_kernel = kernel_dict[np.argmax(score)]
     
     return best_kernel
+
+
+def build_kernel_dict(num_params):
+    kernel_noise = gpflow.kernels.White(variance=1e-3)
+    kernel_matern32 = gpflow.kernels.Matern32(active_dims=range(num_params), variance=10, lengthscales = np.tile(10,num_params))
+    kernel_matern52 = gpflow.kernels.Matern52(active_dims=range(num_params),variance=1,lengthscales=np.tile(1,num_params))
+    kernel_bias = gpflow.kernels.Bias(active_dims = range(num_params))
+    kernel_linear = gpflow.kernels.Linear(active_dims=range(num_params),variance=[1.]*num_params)
+    kernel_poly = gpflow.kernels.Polynomial(active_dims = range(num_params),variance=[1.]*num_params)
+    kernel_RBF = gpflow.kernels.RBF(active_dims = range(num_params), lengthscales=np.tile(1,num_params))
+    
+    kernel_dict = {
+        0:kernel_RBF + kernel_linear + kernel_noise,
+        1:kernel_RBF + kernel_linear + kernel_noise + kernel_bias,
+        2:kernel_poly + kernel_linear + kernel_noise,
+        3:kernel_RBF + kernel_linear + kernel_noise + kernel_bias + kernel_poly,
+        4:kernel_matern32,
+        5:kernel_matern32*kernel_linear+kernel_noise,
+        6:kernel_linear*kernel_RBF+kernel_matern32 + kernel_noise
+    }
+    return kernel_dict
 
 # ===================================================
 # ===========    History Matching   =================

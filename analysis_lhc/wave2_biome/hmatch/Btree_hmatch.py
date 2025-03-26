@@ -88,18 +88,19 @@ biome = 'Tundra'
 b = 13
 nparameters = 41+15*2
 
+pft12_param_names = [f"{param}_{12}" for param in psample.columns]
+cols = np.concatenate([u_params,pft12_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome12_sample)[0] < 100):
-    nx = range(np.shape(biome12_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome12_sample)[0],size=100,replace=False)
+nx = np.random.choice(len(biome12_sample),size=min(len(biome12_sample),100),replace=False)
     
 for n,i in enumerate(nx):
-    u = np.tile(biome12_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft12_param_names = [f"{param}_{12}" for param in psample.columns]
-    p12 = np.tile(biome12_sample[pft12_param_names].iloc[i].values,(n_psamp,1))
+    start_array = np.tile(biome12_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+    u = start[u_params]
+    p12 = start[pft12_param_names]
     p11 = psample.values
     sample = np.concatenate([u,p11,p12],axis=1)
     
@@ -119,63 +120,26 @@ columns = np.concatenate((usample.columns,pft11_param_names,pft12_param_names))
 biome13_sample = pd.DataFrame(biome13_samples,columns=columns)
 
 #############################################
-biome = 'Boreal forest'
-b = 10
-nparameters = 41+15*3
-
-obs_mean = obs.LAI_mean.sel(biome=b).values
-obs_var = obs.LAI_stdev.sel(biome=b).values**2
-
-if (np.shape(biome13_sample)[0] < 100):
-    nx = range(np.shape(biome13_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome13_sample)[0],size=100,replace=False)
-    
-for n,i in enumerate(nx):
-    u = np.tile(biome13_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft11_param_names = [f"{param}_{11}" for param in psample.columns]
-    p11 = np.tile(biome13_sample[pft11_param_names].iloc[i].values,(n_psamp,1))
-    pft12_param_names = [f"{param}_{12}" for param in psample.columns]
-    p12 = np.tile(biome13_sample[pft12_param_names].iloc[i].values,(n_psamp,1))
-    
-    p2 = psample.values
-    sample = np.concatenate([u,p2,p11,p12],axis=1)
-
-    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
-    y_pred, y_pred_var = loaded_emulator.predict(sample)
-    
-    I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
-    ix = np.where(I<2)[0]
-    if (n ==0):
-        biome10_samples = sample[ix,:]
-    else:
-        biome10_samples = np.concatenate((biome10_samples,sample[ix,:]),axis=0)
-
-# create dataframe
-pft2_param_names = [f"{param}_{2}" for param in psample.columns]
-columns = np.concatenate((u_params,pft2_param_names,pft11_param_names,pft12_param_names))
-biome10_sample = pd.DataFrame(biome10_samples,columns=columns)
-
-#############################################
 biome = 'Siberian larch'
 b = 9
 nparameters = 41+15*3
 
+pft11_param_names = [f"{param}_{11}" for param in psample.columns]
+pft12_param_names = [f"{param}_{12}" for param in psample.columns]
+cols = np.concatenate([u_params,pft11_param_names,pft12_param_names]).tolist()
+
 obs_mean = obs.LAI_mean.sel(biome=b).values
 obs_var = obs.LAI_stdev.sel(biome=b).values**2
 
-if (np.shape(biome10_sample)[0] < 100):
-    nx = range(np.shape(biome10_sample)[0])
-else:
-    nx = np.random.choice(np.shape(biome10_sample)[0],size=100,replace=False)
+nx = np.random.choice(len(biome13_sample),size=min(len(biome13_sample),100),replace=False)
     
 for n,i in enumerate(nx):
-    u = np.tile(biome10_sample[u_params].iloc[i].values,(n_psamp,1))
-    pft11_param_names = [f"{param}_{11}" for param in psample.columns]
-    p11 = np.tile(biome10_sample[pft11_param_names].iloc[i].values,(n_psamp,1))
-    pft12_param_names = [f"{param}_{12}" for param in psample.columns]
-    p12 = np.tile(biome10_sample[pft12_param_names].iloc[i].values,(n_psamp,1))
-    
+    start_array = np.tile(biome13_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+
+    u = start[u_params]
+    p11 = start[pft11_param_names]
+    p12 = start[pft12_param_names]
     p3 = psample.values
     sample = np.concatenate([u,p3,p11,p12],axis=1)
 
@@ -195,20 +159,63 @@ columns = np.concatenate((u_params,pft3_param_names,pft11_param_names,pft12_para
 biome9_sample = pd.DataFrame(biome9_samples,columns=columns)
 
 #############################################
+biome = 'Boreal forest'
+b = 10
+nparameters = 41+15*3
+
+pft11_param_names = [f"{param}_{11}" for param in psample.columns]
+pft12_param_names = [f"{param}_{12}" for param in psample.columns]
+cols = np.concatenate([u_params,pft11_param_names,pft12_param_names]).tolist()
+
+obs_mean = obs.LAI_mean.sel(biome=b).values
+obs_var = obs.LAI_stdev.sel(biome=b).values**2
+
+nx = np.random.choice(len(biome9_sample),size=min(len(biome9_sample),100),replace=False)
+    
+for n,i in enumerate(nx):
+    start_array = np.tile(biome9_sample[cols].iloc[i].values,(n_psamp,1))
+    start = pd.DataFrame(start_array, columns=cols)
+
+    u = start[u_params]
+    p11 = start[pft11_param_names]
+    p12 = start[pft12_param_names]
+    
+    p2 = psample.values
+    sample = np.concatenate([u,p2,p11,p12],axis=1)
+
+    loaded_emulator = tf.saved_model.load(emulator_dir + biome)
+    y_pred, y_pred_var = loaded_emulator.predict(sample)
+    
+    I = np.abs(y_pred.numpy().flatten()-obs_mean)/ np.sqrt(obs_var + y_pred_var.numpy().flatten())
+    ix = np.where(I<2)[0]
+    if (n ==0):
+        biome10_samples = sample[ix,:]
+    else:
+        biome10_samples = np.concatenate((biome10_samples,sample[ix,:]),axis=0)
+
+# create dataframe
+pft2_param_names = [f"{param}_{2}" for param in psample.columns]
+columns = np.concatenate((u_params,pft2_param_names,pft11_param_names,pft12_param_names))
+biome10_sample = pd.DataFrame(biome10_samples,columns=columns)
+
+
+#############################################
 # Prune up and save
 
-b9_sample = biome9_sample
-b9_sample.to_csv(outdir+key+"_Btree_biome9.csv", index=False)
-
-cols = np.concatenate((u_params, pft12_param_names))
-biome9_unique = biome9_sample[cols].drop_duplicates()
-
-b10_sample = biome10_sample.merge(biome9_unique, on=cols.tolist(), how='inner')
+b10_sample = biome10_sample
 b10_sample.to_csv(outdir+key+"_Btree_biome10.csv", index=False)
 
-b13_sample = biome13_sample.merge(biome9_unique, on=cols.tolist(), how='inner')
+cols = np.concatenate((u_params, pft11_param_names, pft12_param_names))
+unique = biome10_sample[cols].drop_duplicates()
+
+b9_sample = biome9_sample.merge(unique, on=cols.tolist(), how='inner')
+b9_sample.to_csv(outdir+key+"_Btree_biome9.csv", index=False)
+
+b13_sample = biome13_sample.merge(unique, on=cols.tolist(), how='inner')
 b13_sample.to_csv(outdir+key+"_Btree_biome13.csv", index=False)
 
-b12_sample = biome12_sample.merge(biome9_unique, on=cols.tolist(), how='inner')
-b12_sample.to_csv(outdir+key+"_Btree_biome12.csv", index=False)
+cols = np.concatenate((u_params, pft12_param_names))
+unique = biome10_sample[cols].drop_duplicates()
 
+b12_sample = biome12_sample.merge(unique, on=cols.tolist(), how='inner')
+b12_sample.to_csv(outdir+key+"_Btree_biome12.csv", index=False)
