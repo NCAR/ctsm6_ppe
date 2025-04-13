@@ -1,7 +1,7 @@
 #!/bin/bash
-#PBS -N wave2_hmatch_num
+#PBS -N wave2_hmatch_key
 #PBS -q casper
-#PBS -l walltime=2:00:00
+#PBS -l walltime=3:00:00
 #PBS -A P93300041
 #PBS -j oe
 #PBS -k eod
@@ -10,5 +10,5 @@
 source ~/.bashrc
 conda activate mlenv
 
-python Ctree_hmatch.py num
+python sample_hmatch_save.py key
 

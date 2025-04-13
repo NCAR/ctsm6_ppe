@@ -1,7 +1,7 @@
 
-for i in {0..1}; do
+for i in {102..500}; do
     
-    sed 's/num/'$i'/g' template.sh > 'Ctree_'$i'.job'
-    qsub 'Ctree_'$i'.job'
+    sed 's/key/'$i'/g' template.sh > 'wave2_hmatch_'$i'.job'
+    qsub 'wave2_hmatch_'$i'.job'
 
 done
