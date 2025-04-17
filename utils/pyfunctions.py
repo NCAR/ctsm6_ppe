@@ -49,7 +49,7 @@ def pmean(da,la):
 
 def pxbmean(da):
     f='/glade/u/home/linnia/ctsm6_ppe/utils/lapxb_sg_sudoku_ctsm53017.nc'
-    lapxb=xr.open_dataset(f).landarea_biome
+    lapxb=xr.open_dataset(f).lapxb_sg
     x=(lapxb*da).sum(dim=['pft','vegtype'])/(lapxb).sum(dim=['pft','vegtype'])
     #xm=x.mean(dim='year')
     return x

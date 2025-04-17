@@ -9,9 +9,9 @@ utils_path = '/glade/u/home/linnia/ctsm6_ppe/utils/'
 lhc=sys.argv[1] 
 
 ######################################################
-# setup 
-dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_lhc/hist/'
-out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_lhc/postp/tmp/'
+# setup s
+dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_wave2/hist/'
+out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_wave2/postp/tmp/'
 tape='h0'
 
 dvs=['GPP','AR','HR','NPP','NBP','NEP','ER',
@@ -32,7 +32,7 @@ def pp(ds):
 # load and process data
 
 f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
-ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp)
+ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp,decode_timedelta=False)
 
 # calculate global and biome mean
 la=xr.open_dataset(utils_path+'landarea_retrain_h0.nc').landarea
@@ -42,12 +42,9 @@ out=xr.Dataset()
 for v in dvs:
 
         x=amean(ds[v])
-        #out[v+'_global_amean']=gmean(x,la)
-        #out[v+'_global_amean'].attrs=ds[v].attrs
+        out[v+'_global_amean']=gmean(x,la)
+        out[v+'_global_amean'].attrs=ds[v].attrs
     
-        out[v+'_biome_amean'] =bmean(x,la,b)
-        out[v+'_biome_amean'].attrs =ds[v].attrs
-
 # save 
 fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
 out.to_netcdf(fout)

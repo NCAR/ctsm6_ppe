@@ -84,7 +84,7 @@ hist_fincl2 += 'GPP', 'NPP', 'AGNPP', 'TOTVEGC', 'NPP_NUPTAKE', 'AR', 'HR', 'HTO
 
 ! h2 stream (monthly average, landunit-level)
 ! TOT_WOODPRODC:I, CROPPROD1C:I, and NEE are not available at the landunit level
-hist_fincl3 += 'GPP', 'NPP', 'AR', 'HR', 'DWT_CONV_CFLUX_PATCH', 'WOOD_HARVESTC', 'DWT_WOOD_PRODUCTC_GAIN_PATCH', 'SLASH_HARVESTC', 'COL_FIRE_CLOSS', 'DWT_SLASH_CFLUX_PATCH', 'FROOTC:I', 'HTOP'
+hist_fincl3 += 'DWT_CONV_CFLUX_PATCH', 'WOOD_HARVESTC', 'DWT_WOOD_PRODUCTC_GAIN_PATCH', 'SLASH_HARVESTC', 'COL_FIRE_CLOSS', 'DWT_SLASH_CFLUX_PATCH', 'FROOTC:I', 'HTOP'
 
 ! h3 stream (yearly average, gridcell-level)
 hist_fincl4 += 'SOILC_vr', 'SOILN_vr', 'CWD_C_vr', 'LIT_MET_C_vr', 'LIT_CEL_C_vr', 'LIT_LIG_C_vr', 'LIT_MET_N_vr', 'LIT_CEL_N_vr', 'LIT_LIG_N_vr','CWD_N_vr', 'TOTLITC:I', 'TOT_WOODPRODC:I', 'TOTSOMC:I','TOTVEGC:I'

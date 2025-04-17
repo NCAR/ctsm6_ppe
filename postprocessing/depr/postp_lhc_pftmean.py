@@ -26,7 +26,7 @@ def pp(ds):
 # load and process data
 
 f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
-ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp)
+ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp,decode_timedelta=False)
 
 # calculate pft mean
 yr1 = '1985'

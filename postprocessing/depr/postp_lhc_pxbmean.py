@@ -10,8 +10,8 @@ ens=sys.argv[1]
 
 ######################################################
 # setup 
-dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_lhc/hist/'
-out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_lhc/postp/tmp/'
+dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_wave2/hist/'
+out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_wave2/postp/tmp/'
 tape='h1'
 
 dvs = ['TOTVEGC','NPP','NPP_NUPTAKE','HTOP','GPP','TLAI','FCTR','FGEV','FCEV','BTRANMN','AR','AGNPP','pfts1d_itype_veg']
@@ -26,7 +26,7 @@ def pp(ds):
 # load and process data
 
 f=sorted(glob.glob(dir+'*'+ens+'*.'+tape+'.*'))
-ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp)
+ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp,decode_timedelta=False)
 
 # calculate pft mean
 yr1 = '1985'

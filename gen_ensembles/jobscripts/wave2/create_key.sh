@@ -1,1 +1,1 @@
-seq -w 0101 0500 | sed 's/^/wave1/' > wave1.txt
+seq -w 0100 0102 | sed 's/^/wave2/' > wave2.txt
