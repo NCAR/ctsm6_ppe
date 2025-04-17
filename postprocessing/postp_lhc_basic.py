@@ -8,6 +8,8 @@ utils_path = '/glade/u/home/linnia/ctsm6_ppe/utils/'
 
 lhc=sys.argv[1] 
 out_dir=sys.argv[2]
+if out_dir[-1]!='/':
+    out_dir+='/'
 
 ######################################################
 # setup 

@@ -1,6 +1,6 @@
-pyscript="postp_lhc_basic.py"
+pyscript="postp_lhc_stresses.py"
 outdir="/glade/derecho/scratch/djk2120/postp/"
-outfile="ctsm6lhc_global_mean_2015-2019.nc"
+outfile="ctsm6lhc_global_stressors_2000-2023.nc"
 author="djk2120@ucar.edu" #no whitespace!!
 template="template.sh" #may need to edit the project code within
 
