@@ -7,6 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import glob
 import dask
+import pickle
 
 import gpflow
 import tensorflow as tf
@@ -331,4 +332,17 @@ def LHC_score(n,nbins,num_params,sample):
     return np.sum(dim_count)
 
 
+#============================================================
+# misc.
 
+def get_biome_param_names(b, u_params, pft_params):
+    
+    with open(utils_dir+"/biome_configs.pkl", "rb") as f:
+        biome_configs = pickle.load(f)
+
+    param_names = list(u_params)
+    for pft in biome_configs[b]['pfts']:
+        pft_param_names = [f"{param}_{pft}" for param in pft_params]
+        param_names.extend(pft_param_names)
+
+    return param_names
