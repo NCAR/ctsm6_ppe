@@ -10,4 +10,4 @@
 source ~/.bashrc
 conda activate mlenv
 
-python postp_lhc_pxbmean.py key
+python postp_lhc_grid.py key

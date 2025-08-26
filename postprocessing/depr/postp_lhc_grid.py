@@ -10,8 +10,8 @@ ens=sys.argv[1]
 
 ######################################################
 # setup 
-dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_wave1/hist/'
-out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_wave1/postp/tmp/'
+dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_lhc/hist/'
+out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_lhc/postp/tmp/'
 tape='h0'
 
 dvs=['GPP','AR','HR','NPP','NBP','NEP','ER',
@@ -38,9 +38,10 @@ out=xr.Dataset()
     
 for v in dvs:
 
-        out[v+'_gridded_amean']=amean(ds[v])
-        out[v+'_gridded_amean'].attrs =ds[v].attrs
+        #out[v+'_gridded_amean']=amean(ds[v])
+        out[v]=ds[v]
+        out[v].attrs =ds[v].attrs
 
 # save 
-fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp_grid.nc'
+fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp_gridded_monthly.nc'
 out.to_netcdf(fout)

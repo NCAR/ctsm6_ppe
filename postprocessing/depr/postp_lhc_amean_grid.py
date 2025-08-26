@@ -14,13 +14,15 @@ dir='/glade/campaign/cgd/tss/projects/PPE/ctsm6_lhc/hist/'
 out_dir='/glade/work/linnia/CLM6-PPE/ctsm6_lhc/postp/tmp/'
 tape='h0'
 
-dvs=['GPP','AR','HR','NPP','NBP','NEP','ER',
-     'EFLX_LH_TOT','FCTR','FCEV','FGEV','BTRANMN','FGR','FSH',
-     'SOILWATER_10CM','TWS','QRUNOFF','SNOWDP','H2OSNO','FSNO',
-     'TLAI','FSR','ALTMAX','TV','TG','NPP_NUPTAKE','LAND_USE_FLUX',
-     'FAREA_BURNED','COL_FIRE_CLOSS',
-     'TOTVEGC','TOTECOSYSC','TOTSOMC_1m',
-     'TOTVEGN','TOTECOSYSN']
+#dvs=['GPP','AR','HR','NPP','NBP','NEP','ER',
+#     'EFLX_LH_TOT','FCTR','FCEV','FGEV','BTRANMN','FGR','FSH',
+#     'SOILWATER_10CM','TWS','QRUNOFF','SNOWDP','H2OSNO','FSNO',
+#     'TLAI','FSR','ALTMAX','TV','TG','NPP_NUPTAKE','LAND_USE_FLUX',
+#     'FAREA_BURNED','COL_FIRE_CLOSS',
+#     'TOTVEGC','TOTECOSYSC','TOTSOMC_1m',
+#     'TOTVEGN','TOTECOSYSN']
+
+dvs = ['H2OSOI']
 
 def pp(ds):
     yr0=str(ds['time.year'][0].values)

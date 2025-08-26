@@ -6,7 +6,7 @@ sys.path.append('/glade/u/home/linnia/ctsm6_ppe/')
 from utils.pyfunctions import *
 utils_path = '/glade/u/home/linnia/ctsm6_ppe/utils/'
 
-lhc=sys.argv[1] 
+ens=sys.argv[1] 
 
 ######################################################
 # setup 
@@ -31,21 +31,28 @@ def pp(ds):
 ######################################################
 # load and process data
 
-f=sorted(glob.glob(dir+'*'+lhc+'*.'+tape+'.*'))
+f=sorted(glob.glob(dir+'*'+ens+'*.'+tape+'.*'))
 ds=xr.open_mfdataset(f,combine='by_coords',preprocess=pp)
 
 # calculate global and biome mean
 la=xr.open_dataset(utils_path+'landarea_retrain_h0.nc').landarea
-#b=xr.open_dataset(utils_path+'whit/whitkey_CRUJRA.nc').biome
-b = xr.open_dataset(utils_path+'MODIS_Xu2022_biomes.nc').biome
+b=xr.open_dataset(utils_path+'whit/whitkey_CRUJRA.nc').biome
+#b = xr.open_dataset(utils_path+'MODIS_Xu2022_biomes.nc').biome
 out=xr.Dataset()
+
+yr1 = '1985'
+yr2 = '2023'
     
 for v in dvs:
 
-        x=amean(ds[v])
-        #out[v+'_global_amean']=gmean(x,la)
-        #out[v+'_global_amean'].attrs=ds[v].attrs
-    
+    if v=='TLAI':
+        #x=amax(ds[v].sel(time=slice(yr1,yr2)))
+        x=ds[v].sel(time=slice(yr1,yr2))
+        out[v+'_biome_amax'] = bmean(x,la,b)
+        out[v+'_biome_amax'].attrs =ds[v].attrs
+    else:
+        #x=amean(ds[v].sel(time=slice(yr1,yr2)))
+        x=ds[v].sel(time=slice(yr1,yr2))
         out[v+'_biome_amean'] =bmean(x,la,b)
         out[v+'_biome_amean'].attrs =ds[v].attrs
 

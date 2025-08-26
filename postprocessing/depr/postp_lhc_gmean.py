@@ -44,8 +44,7 @@ for v in dvs:
         x=amean(ds[v])
         out[v+'_global_amean']=gmean(x,la)
         out[v+'_global_amean'].attrs=ds[v].attrs
-    
-# save 
+
+# save
 fout=out_dir+f[0].split('/')[-1].split('clm2')[0]+'postp.nc'
 out.to_netcdf(fout)
-
