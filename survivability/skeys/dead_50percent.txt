@@ -1,3 +1,0 @@
-key,param,minmax,dead_pfts
-oaat0071,akn_active,max,14
-oaat0146,KCN,max,14
