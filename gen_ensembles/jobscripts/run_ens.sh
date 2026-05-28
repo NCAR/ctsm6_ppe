@@ -33,6 +33,12 @@ while read p; do
 	./case.setup
 	./xmlchange PROJECT=$PROJECT
 
+	stage=$(echo $thiscase | cut -d_ -f7 | cut -d/ -f1)
+
+    if [ "$stage" == "SASU" ]; then
+        ./xmlchange RESUBMIT=2
+    fi
+
 	#comment out previous paramfile from user_nl_clm
 	:> user_nl_clm.tmp
 	while read line; do
